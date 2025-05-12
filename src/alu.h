@@ -10,6 +10,9 @@ SC_MODULE(ALU) {
     sc_out<sc_uint<32>> result;
 
     void compute() {
+        cout << "a: " << operand_a.read() << endl;
+        cout << "b: " << operand_b.read() << endl;
+
         switch (opcode.read()) {
             case Opcode::ADD:
                 result.write(operand_a.read() + operand_b.read());
@@ -30,7 +33,7 @@ SC_MODULE(ALU) {
                 result.write(~operand_a.read());
                 break;
             case Opcode::CMP:
-                result.write((operand_a.read() < operand_b.read()) ? 1 : 0);
+                result.write(operand_a.read() - operand_b.read());
                 break;
             default:
                 cout << "Instrução não reconhecida pela ULA!" << endl;

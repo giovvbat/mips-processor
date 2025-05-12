@@ -32,11 +32,13 @@ SC_MODULE(Processor) {
         alu->opcode(alu_opcode);
         alu->result(alu_result);
 
-        instruction_memory[0] = (Opcode::ADD << 26) | (1 << 21) | (2 << 16) | (3 << 11);
-        instruction_memory[1] = (Opcode::SUB << 26) | (4 << 21) | (3 << 16) | (5 << 11);
+        instruction_memory[0] = (Opcode::CMP << 26) | (5 << 21) | (5 << 16);
+        instruction_memory[1] = (Opcode::JN << 26) | 3;
+        instruction_memory[2] = (Opcode::ADD << 26) | (5 << 21) | (5 << 16) | (5 << 11);
+        instruction_memory[3] = (Opcode::ADD << 26) | (5 << 21) | (5 << 16) | (5 << 11);
 
         for (int i = 0; i < 32; i++) {
-            registers[i] = i + 1;
+            registers[i] = i;
         }
 
         pc = 0;
@@ -59,10 +61,9 @@ SC_MODULE(Processor) {
                     rd = fetched_instruction.read().range(15, 11);
                     address = fetched_instruction.read().range(7, 0);
 
-                    alu_operand_a.write(registers[rs.read()].read());
-                    alu_operand_b.write(registers[rt.read()].read());
-                    alu_opcode.write(opcode);
-
+                    current_state = DELEGATE;
+                    break;
+                case DELEGATE:
                     switch (opcode.read()) {
                         case Opcode::ADD:
                         case Opcode::SUB:
@@ -71,7 +72,7 @@ SC_MODULE(Processor) {
                         case Opcode::XOR:
                         case Opcode::NOT:
                         case Opcode::CMP:
-                            current_state = EXECUTE;
+                            current_state = LOAD;
                             break;
                         case Opcode::LD:
                         case Opcode::ST:
@@ -88,9 +89,17 @@ SC_MODULE(Processor) {
                             break;
                     }
                     break;
+                case LOAD:
+                    alu_operand_a.write(registers[rs.read()].read());
+                    alu_operand_b.write(registers[rt.read()].read());
+                    alu_opcode.write(opcode);
+                    current_state = EXECUTE;
+                    break;
                 case EXECUTE:
-                    wait(SC_ZERO_TIME);
-                    registers[rd.read()].write(alu_result.read());
+                    if (opcode.read() != Opcode::CMP) {
+                        registers[rd.read()].write(alu_result.read());
+                    }
+
                     cout << "EXECUTE: ALU result = " << alu_result.read() << endl;
                     current_state = WRITEBACK;
                     break;
@@ -135,6 +144,9 @@ SC_MODULE(Processor) {
                     }
                     break;
                 case WRITEBACK:
+                    if (pc.read() >= 3) {
+                        return;
+                    }
                     pc.write(pc.read() + 1);
                     current_state = FETCH;
                     break;
