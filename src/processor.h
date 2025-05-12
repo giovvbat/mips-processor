@@ -1,0 +1,238 @@
+#pragma once
+
+#include <sysc/kernel/sc_time.h>
+#include <sysc/kernel/sc_wait.h>
+#include <systemc.h>
+#include "opcode.h"
+#include "alu.h"
+#include "states.h"
+
+SC_MODULE(Processor) {
+    sc_signal<sc_uint<8>> pc;
+    sc_signal<sc_uint<32>> instruction_memory[256];
+    sc_signal<sc_uint<32>> data_memory[256];
+    sc_signal<sc_uint<32>> registers[32];
+
+    sc_signal<sc_uint<32>> alu_operand_a, alu_operand_b;
+    sc_signal<sc_uint<6>> alu_opcode;
+    sc_signal<sc_uint<32>> alu_result;
+
+    sc_signal<sc_uint<32>> fetched_instruction;
+    sc_signal<sc_uint<5>> rs, rt, rd;
+    sc_signal<sc_uint<8>> address;
+    sc_signal<sc_uint<6>> opcode;
+
+    ALU* alu;
+    States current_state;
+
+    SC_CTOR(Processor) {
+        alu = new ALU("ALU");
+        alu->operand_a(alu_operand_a);
+        alu->operand_b(alu_operand_b);
+        alu->opcode(alu_opcode);
+        alu->result(alu_result);
+
+        instruction_memory[0] = (Opcode::ADD << 26) | (1 << 21) | (2 << 16) | (3 << 11);
+        instruction_memory[1] = (Opcode::SUB << 26) | (4 << 21) | (3 << 16) | (5 << 11);
+
+        for (int i = 0; i < 32; i++) {
+            registers[i] = i + 1;
+        }
+
+        pc = 0;
+        current_state = FETCH;
+
+        SC_THREAD(pipeline);
+    }
+
+    void pipeline() {
+        while (true) {
+            switch (current_state) {
+                case FETCH:
+                    fetched_instruction = instruction_memory[pc.read()];
+                    current_state = DECODE;
+                    break;
+                case DECODE:
+                    opcode = fetched_instruction.read().range(31, 26);
+                    rs = fetched_instruction.read().range(25, 21);
+                    rt = fetched_instruction.read().range(20, 16);
+                    rd = fetched_instruction.read().range(15, 11);
+                    address = fetched_instruction.read().range(7, 0);
+
+                    alu_operand_a.write(registers[rs.read()].read());
+                    alu_operand_b.write(registers[rt.read()].read());
+                    alu_opcode.write(opcode);
+
+                    switch (opcode.read()) {
+                        case Opcode::ADD:
+                        case Opcode::SUB:
+                        case Opcode::AND:
+                        case Opcode::OR:
+                        case Opcode::XOR:
+                        case Opcode::NOT:
+                        case Opcode::CMP:
+                            current_state = EXECUTE;
+                            break;
+                        case Opcode::LD:
+                        case Opcode::ST:
+                            current_state = MEMORY;
+                            break;
+                        case Opcode::J:
+                        case Opcode::JN:
+                        case Opcode::JZ:
+                            current_state = JUMP;
+                            break;
+                    }
+                    break;
+                case EXECUTE:
+                    registers[rd.read()].write(alu_result.read());
+                    cout << "EXECUTE: ALU result = " << alu_result.read() << endl;
+                    current_state = WRITEBACK;
+                    break;
+                case MEMORY:
+                    switch (opcode.read()) {
+                        case Opcode::LD:
+                            registers[rd.read()] = data_memory[address.read()].read();
+                            break;
+                        case Opcode::ST:
+                            data_memory[address.read()] = registers[rs.read()].read();
+                            break;
+                        default:
+                            break;
+                    }
+
+                    current_state = WRITEBACK;
+                    break;
+                case JUMP:
+                    switch (opcode.read()) {
+                        case Opcode::J:
+                            pc = address.read();
+                            current_state = FETCH;
+                            break;
+                        case Opcode::JZ:
+                            if (alu_result.read() == 0) {
+                                pc = address.read();
+                                current_state = FETCH;
+                            } else {
+                                current_state = WRITEBACK;
+                            }
+                            break;
+                        case Opcode::JN:
+                            if (alu_result.read() == 0) {
+                                pc = address.read();
+                                current_state = FETCH;
+                            } else {
+                                current_state = WRITEBACK;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                case WRITEBACK:
+                    pc.write(pc.read() + 1);
+                    current_state = FETCH;
+                    break;
+                }
+
+            wait(10, SC_NS);
+        }
+    }
+
+    void decode(sc_uint<32> instruction) {
+        sc_uint<6> opcode = instruction.range(31, 26);
+        sc_uint<5> rs = instruction.range(25, 21);
+        sc_uint<5> rt = instruction.range(20, 16);
+        sc_uint<5> rd = instruction.range(15, 11);
+        sc_uint<8> address = instruction.range(7, 0);
+
+        alu_operand_a.write(registers[rs].read());
+        alu_operand_b.write(registers[rt].read());
+        alu_opcode.write(opcode);
+    }
+
+    void execute(sc_uint<32> instruction) {
+        sc_uint<6> opcode = instruction.range(31, 26);
+        sc_uint<5> rs = instruction.range(25, 21);
+        sc_uint<5> rt = instruction.range(20, 16);
+        sc_uint<5> rd = instruction.range(15, 11);
+        sc_uint<8> address = instruction.range(7, 0);
+
+        switch (opcode) {
+            case Opcode::ADD:
+            case Opcode::SUB:
+            case Opcode::AND:
+            case Opcode::OR:
+            case Opcode::XOR:
+            case Opcode::NOT:
+            case Opcode::CMP:
+                registers[rd].write(alu_result.read());
+                break;
+            case Opcode::LD:
+                registers[rd] = data_memory[address].read();
+                break;
+            case Opcode::ST:
+                data_memory[address] = registers[rs].read();
+                break;
+            case Opcode::J:
+                pc = address;
+                break;
+            case Opcode::JN:
+                if (alu_result.read()[31] == 1) { // Se resultado negativo
+                    pc = address;
+                }
+                break;
+            case Opcode::JZ:
+                if (alu_result.read() == 0) {
+                    pc = address;
+                }
+                break;
+            default:
+                cout << "Instrução desconhecida!" << endl;
+        }
+    }
+
+    void decode_and_execute(sc_uint<32> instruction) {
+        sc_uint<6> opcode = instruction.range(31, 26);
+        sc_uint<5> rs = instruction.range(25, 21);
+        sc_uint<5> rt = instruction.range(20, 16);
+        sc_uint<5> rd = instruction.range(15, 11);
+        sc_uint<8> address = instruction.range(7, 0);
+
+        alu_operand_a.write(registers[rs].read());
+        alu_operand_b.write(registers[rt].read());
+        alu_opcode.write(opcode);
+
+    switch (opcode) {
+            case Opcode::ADD:
+            case Opcode::SUB:
+            case Opcode::AND:
+            case Opcode::OR:
+            case Opcode::XOR:
+            case Opcode::NOT:
+            case Opcode::CMP:
+                registers[rd].write(alu_result.read());
+                break;
+            case Opcode::LD:
+                registers[rd] = data_memory[address].read();
+                break;
+            case Opcode::ST:
+                data_memory[address] = registers[rs].read();
+                break;
+            case Opcode::J:
+                pc = address;
+                break;
+            case Opcode::JN:
+                if (alu_result.read()[31] == 1) { // Se resultado negativo
+                    pc = address;
+                }
+                break;
+            case Opcode::JZ:
+                if (alu_result.read() == 0) {
+                    pc = address;
+                }
+                break;
+            default:
+                cout << "Instrução desconhecida!" << endl;
+        }
+    }
+};
