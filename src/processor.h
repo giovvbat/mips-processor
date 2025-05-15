@@ -16,6 +16,8 @@ SC_MODULE(Processor) {
     sc_signal<sc_uint<32>> alu_operand_a, alu_operand_b;
     sc_signal<sc_uint<6>> alu_opcode;
     sc_signal<sc_uint<32>> alu_result;
+    sc_signal<bool> alu_negative;
+    sc_signal<bool> alu_zero;
 
     sc_signal<sc_uint<32>> fetched_instruction;
     sc_signal<sc_uint<5>> rs, rt, rd;
@@ -31,6 +33,8 @@ SC_MODULE(Processor) {
         alu->operand_b(alu_operand_b);
         alu->opcode(alu_opcode);
         alu->result(alu_result);
+        alu->zero(alu_zero);
+        alu->negative(alu_negative);
 
         instruction_memory[0] = (Opcode::CMP << 26) | (5 << 21) | (5 << 16);
         instruction_memory[1] = (Opcode::JN << 26) | 3;
@@ -124,7 +128,7 @@ SC_MODULE(Processor) {
                             current_state = FETCH;
                             break;
                         case Opcode::JZ:
-                            if (alu_result.read() == 0) {
+                            if (alu_zero.read()) {
                                 pc = address.read();
                                 current_state = FETCH;
                             } else {
@@ -132,7 +136,7 @@ SC_MODULE(Processor) {
                             }
                             break;
                         case Opcode::JN:
-                            if (alu_result.read()[31] == 1) {
+                            if (alu_negative.read()) {
                                 pc = address.read();
                                 current_state = FETCH;
                             } else {
