@@ -8,7 +8,7 @@ SC_MODULE(InstructionMemory) {
     sc_in<sc_uint<8>> address;
     sc_in<bool> inst_mem_read;
 
-    sc_signal<sc_uint<32>> fetched_instruction;
+    sc_out<sc_uint<32>> fetched_instruction;
 
     sc_uint<32> memory[256];
 
@@ -20,6 +20,6 @@ SC_MODULE(InstructionMemory) {
     }
 
     void read() {
-        fetched_instruction = memory[address.read()];
+        fetched_instruction.write(memory[address.read()]);
     }
 };

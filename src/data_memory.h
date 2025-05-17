@@ -9,15 +9,11 @@ SC_MODULE(DataMemory) {
     sc_in<sc_uint<8>> address;
     sc_in<sc_uint<32>> write_data;
 
-    sc_signal<sc_uint<32>> mem_data;
+    sc_out<sc_uint<32>> mem_data;
 
     sc_uint<32> data_memory[256];
 
     SC_CTOR(DataMemory) {
-        for (int i = 0; i < 256; i++) {
-            data_memory[i] = 0;
-        }
-
         SC_METHOD(read);
         sensitive << data_mem_read.pos();
 

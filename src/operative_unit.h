@@ -11,9 +11,9 @@
 SC_MODULE(OperativeUnit) {
     sc_in<sc_uint<32>> fetched_instruction;
 
-    sc_signal<sc_uint<6>> opcode;
-    sc_signal<sc_uint<5>> rs, rt, rd;
-    sc_signal<sc_uint<8>> address;
+    sc_out<sc_uint<6>> opcode;
+    sc_out<sc_uint<5>> rs, rt, rd;
+    sc_out<sc_uint<8>> address;
 
     ALU *alu;
     Registers *registers;
@@ -30,6 +30,14 @@ SC_MODULE(OperativeUnit) {
 
         SC_METHOD(decode);
         sensitive << fetched_instruction;
+    }
+
+    ~OperativeUnit() {
+        delete alu;
+        delete registers;
+        delete instruction_memory;
+        delete data_memory;
+        delete pc;
     }
 
     void decode() {

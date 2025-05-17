@@ -1,0 +1,163 @@
+$date
+     May 17, 2025       00:49:32
+$end
+
+$version
+ SystemC 2.3.4-Accellera --- Nov  2 2023 12:43:11
+$end
+
+$timescale
+     1 ps
+$end
+
+$scope module SystemC $end
+$var wire    1  aaaaa  clock       $end
+$var wire   32  aaaab  fetched_instruction [31:0]  $end
+$var wire    6  aaaac  opcode [5:0]  $end
+$var wire    5  aaaad  rs [4:0]  $end
+$var wire    5  aaaae  rt [4:0]  $end
+$var wire    5  aaaaf  rd [4:0]  $end
+$var wire    8  aaaag  address [7:0]  $end
+$var wire   32  aaaah  reg_data_s [31:0]  $end
+$var wire   32  aaaai  reg_data_t [31:0]  $end
+$var wire    6  aaaaj  alu_opcode [5:0]  $end
+$var wire    1  aaaak  alu_execute       $end
+$var wire   32  aaaal  alu_result [31:0]  $end
+$var wire    1  aaaam  alu_zero       $end
+$var wire    1  aaaan  alu_negative       $end
+$var wire    1  aaaao  pc_write       $end
+$var wire    1  aaaap  pc_source       $end
+$var wire    1  aaaaq  reg_write       $end
+$var wire    1  aaaar  mem_to_reg       $end
+$var wire    1  aaaas  inst_mem_read       $end
+$var wire    1  aaaat  data_mem_read       $end
+$var wire    1  aaaau  data_mem_write       $end
+$var wire   32  aaaav  mem_data [31:0]  $end
+$var wire    8  aaaaw  pc_value [7:0]  $end
+$upscope $end
+$enddefinitions  $end
+
+$comment
+All initial values are dumped below at time 0 sec = 0 timescale units.
+$end
+
+$dumpvars
+1aaaaa
+b1000100001100000100000 aaaab
+b0 aaaac
+b1 aaaad
+b10 aaaae
+b11 aaaaf
+b100000 aaaag
+b1 aaaah
+b10 aaaai
+b0 aaaaj
+0aaaak
+b0 aaaal
+0aaaam
+0aaaan
+0aaaao
+0aaaap
+0aaaaq
+0aaaar
+0aaaas
+0aaaat
+0aaaau
+b0 aaaav
+b0 aaaaw
+$end
+
+#5000
+0aaaaa
+
+#10000
+1aaaaa
+b100101001100011100000000000 aaaab
+b1 aaaac
+b101 aaaad
+b110 aaaae
+b111 aaaaf
+b0 aaaag
+b101 aaaah
+b110 aaaai
+
+#15000
+0aaaaa
+
+#20000
+1aaaaa
+b11101010010110000000001000010 aaaab
+b111 aaaac
+b1010 aaaad
+b1011 aaaae
+b0 aaaaf
+b1000010 aaaag
+b1010 aaaah
+b1011 aaaai
+
+#25000
+0aaaaa
+
+#30000
+1aaaaa
+b100001100011010000000001010101 aaaab
+b1000 aaaac
+b1100 aaaad
+b1101 aaaae
+b1010101 aaaag
+b1100 aaaah
+b1101 aaaai
+
+#35000
+0aaaaa
+
+#40000
+1aaaaa
+b100100000000000000000001110111 aaaab
+b1001 aaaac
+b0 aaaad
+b0 aaaae
+b1110111 aaaag
+b0 aaaah
+b0 aaaai
+
+#45000
+0aaaaa
+
+#50000
+1aaaaa
+b101100000000000000000001110111 aaaab
+b1011 aaaac
+
+#55000
+0aaaaa
+
+#60000
+1aaaaa
+b1010000100011001000000000000 aaaab
+b10 aaaac
+b10000 aaaad
+b10001 aaaae
+b10010 aaaaf
+b0 aaaag
+b10000 aaaah
+b10001 aaaai
+
+#65000
+0aaaaa
+
+#70000
+1aaaaa
+b11111111111111111111100011111111 aaaab
+b111111 aaaac
+b11111 aaaad
+b11111 aaaae
+b11111 aaaaf
+b11111111 aaaag
+b11111 aaaah
+b11111 aaaai
+
+#75000
+0aaaaa
+
+#80000
