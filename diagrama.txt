@@ -1,0 +1,105 @@
+Visão Geral
+O processador é implementado como uma arquitetura de cinco estágios: Busca (Fetch), Decodificação (Decode), Execução (Execute), Memória (Memory) e Escrita (Writeback). Ele segue o modelo de arquitetura Harvard, separando a memória de instruções da memória de dados.
+
+## Blocos Principais
+
+### 1. Processador (Processor)
+- Bloco principal que interconecta todas as unidades
+- Contém conexões para clock e sinais de controle
+- Gerencia os dois módulos principais: Unidade de Controle e Unidade Operativa
+
+### 2. Unidade de Controle (ControlUnit)
+- Implementa uma máquina de estados finitos (FSM) com 5 estados
+- Entradas:
+  * Clock (clk)
+  * Código de operação (opcode)
+  * Sinais de condição da ULA (zero, negative)
+- Saídas:
+  * Sinais de controle para ULA (alu_opcode, alu_execute)
+  * Sinais de controle para PC (pc_write, pc_source)
+  * Sinais de controle para registradores (reg_write, mem_to_reg)
+  * Sinais de controle para memórias (inst_mem_read, data_mem_read, data_mem_write)
+
+### 3. Unidade Operativa (OperativeUnit)
+- Contém todos os componentes do caminho de dados
+- Gerencia os seguintes submódulos:
+  * Unidade Lógica Aritmética (ALU)
+  * Banco de Registradores (Registers)
+  * Memória de Instruções (InstructionMemory)
+  * Memória de Dados (DataMemory)
+  * Contador de Programa (PC)
+
+#### 3.1. Unidade Lógica Aritmética (ALU)
+- Executa operações aritméticas e lógicas
+- Operações suportadas: ADD, SUB, AND, OR, XOR, NOT, CMP
+- Entradas:
+  * Operandos (operand_s, operand_t)
+  * Código de operação (opcode)
+  * Sinal de execução (alu_execute)
+- Saídas:
+  * Resultado da operação (result)
+  * Flags de condição (zero, negative)
+
+#### 3.2. Banco de Registradores (Registers)
+- Contém 32 registradores de 32 bits cada
+- Entradas:
+  * Endereços dos registradores de leitura (rs, rt)
+  * Endereço do registrador de escrita (rd)
+  * Dados para escrita (mem_write_data, alu_write_data)
+  * Sinais de controle (reg_write, mem_to_reg)
+- Saídas:
+  * Dados lidos dos registradores (read_data_s, read_data_t)
+
+#### 3.3. Memória de Instruções (InstructionMemory)
+- Armazena as instruções do programa
+- Entradas:
+  * Endereço (address) vindo do PC
+  * Sinal de leitura (inst_mem_read)
+- Saídas:
+  * Instrução buscada (fetched_instruction)
+
+#### 3.4. Memória de Dados (DataMemory)
+- Armazena dados do programa
+- Entradas:
+  * Endereço (address)
+  * Dados para escrita (write_data)
+  * Sinais de controle (data_mem_read, data_mem_write)
+- Saídas:
+  * Dados lidos (mem_data)
+
+#### 3.5. Contador de Programa (PC)
+- Mantém o endereço da próxima instrução a ser executada
+- Entradas:
+  * Endereço de salto (jump_address)
+  * Sinais de controle (pc_source, pc_write)
+- Saídas:
+  * Valor atual do PC (pc)
+
+## Fluxo de Dados
+
+1. O PC fornece o endereço para a memória de instruções
+2. A instrução é buscada e decodificada para extrair opcode e endereços de registradores
+3. Os registradores fonte são lidos
+4. A ULA executa a operação especificada
+5. Dependendo da instrução, pode haver acesso à memória de dados
+6. O resultado é escrito de volta no banco de registradores (se necessário)
+7. O PC é atualizado para a próxima instrução ou desviado para um salto
+
+## Conjunto de Instruções
+O processador suporta as seguintes operações:
+- Aritméticas: ADD, SUB
+- Lógicas: AND, OR, XOR, NOT
+- Comparação: CMP
+- Memória: LD (Load), ST (Store)
+- Saltos: J (Jump), JN (Jump if Negative), JZ (Jump if Zero)
+
+## Sinais de Controle Principais
+- alu_execute: Ativa a execução na ULA
+- pc_write: Habilita a escrita no PC
+- pc_source: Seleciona entre incremento do PC ou salto
+- reg_write: Habilita a escrita nos registradores
+- mem_to_reg: Seleciona dados da ULA ou memória para escrita nos registradores
+- inst_mem_read: Habilita leitura da memória de instruções
+- data_mem_read/data_mem_write: Habilita leitura/escrita na memória de dados
+
+O diagrama ilustra como a máquina de estados finitos da unidade de controle coordena todos os componentes da unidade operativa através dos cinco estágios do pipeline, gerenciando o fluxo de execução das instruções.

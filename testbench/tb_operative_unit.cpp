@@ -114,7 +114,7 @@ int sc_main(int argc, char* argv[]) {
     operative_unit.pc->pc(pc_value);
 
     // Open VCD file
-    sc_trace_file* wf = sc_create_vcd_trace_file("operative_unit_waveform");
+    sc_trace_file* wf = sc_create_vcd_trace_file("waveforms/operative_unit_tb");
     if (!wf) {
         std::cerr << "Error: Could not create waveform file." << std::endl;
         return -1;

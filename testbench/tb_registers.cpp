@@ -75,6 +75,29 @@ SC_MODULE(RegistersTB) {
 
 int sc_main(int argc, char* argv[]) {
     RegistersTB tb("RegistersTB");
+
+    // Create VCD trace file
+    sc_trace_file* tf = sc_create_vcd_trace_file("waveforms/registers_tb");
+    if (!tf) {
+        std::cout << "Error: Could not create trace file" << std::endl;
+        return 1;
+    }
+
+    // Trace the signals
+    sc_trace(tf, tb.rs, "rs");
+    sc_trace(tf, tb.rt, "rt");
+    sc_trace(tf, tb.rd, "rd");
+    sc_trace(tf, tb.mem_write_data, "mem_write_data");
+    sc_trace(tf, tb.alu_write_data, "alu_write_data");
+    sc_trace(tf, tb.reg_write, "reg_write");
+    sc_trace(tf, tb.mem_to_reg, "mem_to_reg");
+    sc_trace(tf, tb.read_data_s, "read_data_s");
+    sc_trace(tf, tb.read_data_t, "read_data_t");
+
     sc_start();
+
+    // Close trace file
+    sc_close_vcd_trace_file(tf);
+
     return 0;
 }

@@ -1,0 +1,63 @@
+$date
+     May 18, 2025       22:51:07
+$end
+
+$version
+ SystemC 2.3.4-Accellera --- Nov  2 2023 12:43:11
+$end
+
+$timescale
+     1 ps
+$end
+
+$scope module SystemC $end
+$var wire    1  aaaaa  data_mem_read       $end
+$var wire    1  aaaab  data_mem_write       $end
+$var wire    8  aaaac  address [7:0]  $end
+$var wire   32  aaaad  write_data [31:0]  $end
+$var wire   32  aaaae  mem_data [31:0]  $end
+$upscope $end
+$enddefinitions  $end
+
+$comment
+All initial values are dumped below at time 0 sec = 0 timescale units.
+$end
+
+$dumpvars
+0aaaaa
+0aaaab
+b0 aaaac
+b0 aaaad
+b0 aaaae
+$end
+
+#10000
+1aaaab
+b1010 aaaac
+b11011110101011011011111011101111 aaaad
+
+#20000
+0aaaab
+
+#30000
+1aaaaa
+b11011110101011011011111011101111 aaaae
+
+#40000
+0aaaaa
+
+#50000
+1aaaab
+b11111110111000011101111010101101 aaaad
+
+#60000
+0aaaab
+
+#70000
+1aaaaa
+b11111110111000011101111010101101 aaaae
+
+#80000
+0aaaaa
+
+#90000

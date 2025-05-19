@@ -62,6 +62,24 @@ SC_MODULE(PCTB) {
 
 int sc_main(int argc, char* argv[]) {
     PCTB tb("tb");
+
+    // Create VCD trace file
+    sc_trace_file* tf = sc_create_vcd_trace_file("waveforms/pc_tb");
+    if (!tf) {
+        std::cout << "Error: Could not create trace file" << std::endl;
+        return 1;
+    }
+
+    // Trace the signals
+    sc_trace(tf, tb.pc_source, "pc_source");
+    sc_trace(tf, tb.pc_write, "pc_write");
+    sc_trace(tf, tb.jump_address, "jump_address");
+    sc_trace(tf, tb.pc_value, "pc_value");
+
     sc_start();
+
+    // Close trace file
+    sc_close_vcd_trace_file(tf);
+
     return 0;
 }

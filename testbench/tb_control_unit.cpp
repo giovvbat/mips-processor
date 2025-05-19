@@ -172,6 +172,33 @@ SC_MODULE(ControlUnitTB) {
 
 int sc_main(int argc, char* argv[]) {
     ControlUnitTB tb("tb_control_unit_improved");
+
+    // Create VCD trace file
+    sc_trace_file* tf = sc_create_vcd_trace_file("waveforms/control_unit_tb");
+    if (!tf) {
+        std::cout << "Error: Could not create trace file" << std::endl;
+        return 1;
+    }
+
+    // Trace the signals
+    sc_trace(tf, tb.clk, "clk");
+    sc_trace(tf, tb.opcode, "opcode");
+    sc_trace(tf, tb.alu_zero, "alu_zero");
+    sc_trace(tf, tb.alu_negative, "alu_negative");
+    sc_trace(tf, tb.alu_opcode, "alu_opcode");
+    sc_trace(tf, tb.alu_execute, "alu_execute");
+    sc_trace(tf, tb.pc_write, "pc_write");
+    sc_trace(tf, tb.pc_source, "pc_source");
+    sc_trace(tf, tb.reg_write, "reg_write");
+    sc_trace(tf, tb.mem_to_reg, "mem_to_reg");
+    sc_trace(tf, tb.inst_mem_read, "inst_mem_read");
+    sc_trace(tf, tb.data_mem_read, "data_mem_read");
+    sc_trace(tf, tb.data_mem_write, "data_mem_write");
+
     sc_start();
+
+    // Close trace file
+    sc_close_vcd_trace_file(tf);
+
     return 0;
 }

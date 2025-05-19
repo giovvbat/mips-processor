@@ -33,5 +33,3 @@ processor:
 main:
 	g++ src/main.cpp -o build/main -I/usr/local/include -L/usr/local/lib -lsystemc -lm
 	build/main
-
-	$(CXX) $(

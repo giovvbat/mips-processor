@@ -169,7 +169,7 @@ SC_MODULE(ProcessorTB) {
         initialize_registers();
 
         // Create trace file
-        tf = sc_create_vcd_trace_file("processor_waveform");
+        tf = sc_create_vcd_trace_file("waveforms/processor_tb");
         if (!tf) {
             std::cerr << "Error: Could not create waveform file." << std::endl;
             return;

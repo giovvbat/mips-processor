@@ -95,6 +95,27 @@ SC_MODULE(ALU_TB) {
 
 int sc_main(int argc, char* argv[]) {
     ALU_TB tb("tb");
+
+    // Create VCD trace file
+    sc_trace_file* tf = sc_create_vcd_trace_file("waveforms/alu_tb");
+    if (!tf) {
+        cout << "Error: Could not create trace file" << endl;
+        return 1;
+    }
+
+    // Trace the signals
+    sc_trace(tf, tb.operand_s, "operand_s");
+    sc_trace(tf, tb.operand_t, "operand_t");
+    sc_trace(tf, tb.opcode, "opcode");
+    sc_trace(tf, tb.alu_execute, "alu_execute");
+    sc_trace(tf, tb.result, "result");
+    sc_trace(tf, tb.zero, "zero");
+    sc_trace(tf, tb.negative, "negative");
+
     sc_start();
+
+    // Close trace file
+    sc_close_vcd_trace_file(tf);
+
     return 0;
 }

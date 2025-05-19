@@ -17,6 +17,7 @@ SC_MODULE(InstructionMemory) {
 
         SC_METHOD(read);
         sensitive << inst_mem_read.pos();
+        dont_initialize();
     }
 
     void read() {

@@ -76,6 +76,25 @@ SC_MODULE(DataMemoryTB) {
 
 int sc_main(int argc, char* argv[]) {
     DataMemoryTB tb("tb");
+
+    // Create VCD trace file
+    sc_trace_file* tf = sc_create_vcd_trace_file("waveforms/data_memory_tb");
+    if (!tf) {
+        std::cout << "Error: Could not create trace file" << std::endl;
+        return 1;
+    }
+
+    // Trace the signals
+    sc_trace(tf, tb.data_mem_read, "data_mem_read");
+    sc_trace(tf, tb.data_mem_write, "data_mem_write");
+    sc_trace(tf, tb.address, "address");
+    sc_trace(tf, tb.write_data, "write_data");
+    sc_trace(tf, tb.mem_data, "mem_data");
+
     sc_start();
+
+    // Close trace file
+    sc_close_vcd_trace_file(tf);
+
     return 0;
 }

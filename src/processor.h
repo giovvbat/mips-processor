@@ -67,7 +67,6 @@ SC_MODULE(Processor) {
         operative_unit->rd(rd);
         operative_unit->address(address);
 
-        // Connect ALU ports
         operative_unit->alu->operand_s(reg_data_s);
         operative_unit->alu->operand_t(reg_data_t);
         operative_unit->alu->opcode(alu_opcode);
@@ -77,7 +76,6 @@ SC_MODULE(Processor) {
         operative_unit->alu->zero(alu_zero);
         operative_unit->alu->negative(alu_negative);
 
-        // Connect Registers ports
         operative_unit->registers->rs(rs);
         operative_unit->registers->rt(rt);
         operative_unit->registers->rd(rd);
@@ -89,19 +87,16 @@ SC_MODULE(Processor) {
         operative_unit->registers->read_data_s(reg_data_s);
         operative_unit->registers->read_data_t(reg_data_t);
 
-        // Connect Data Memory ports
         operative_unit->data_memory->data_mem_read(data_mem_read);
         operative_unit->data_memory->data_mem_write(data_mem_write);
         operative_unit->data_memory->address(address);
         operative_unit->data_memory->write_data(reg_data_s);
         operative_unit->data_memory->mem_data(mem_data);
 
-        // Connect Instruction Memory ports
         operative_unit->instruction_memory->address(pc_value);
         operative_unit->instruction_memory->inst_mem_read(inst_mem_read);
         operative_unit->instruction_memory->fetched_instruction(fetched_instruction);
 
-        // Connect PC ports
         operative_unit->pc->pc_source(pc_source);
         operative_unit->pc->pc_write(pc_write);
         operative_unit->pc->jump_address(address);
