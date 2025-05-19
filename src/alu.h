@@ -24,13 +24,15 @@ SC_MODULE(ALU) {
             case Opcode::OR: res = (s | t); break;
             case Opcode::XOR: res = (s ^ t); break;
             case Opcode::NOT: res = (~s); break;
-            case Opcode::CMP: res = (s - t); break;
+            case Opcode::CMP:
+                res = (s - t);
+                zero.write(res == 0);
+                negative.write((sc_int<32>)res < 0);
+                break;
             default: break;
         }
 
         result.write(res);
-        zero.write(res == 0);
-        negative.write((int32_t)res < 0);
     }
 
     SC_CTOR(ALU) {

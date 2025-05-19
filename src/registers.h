@@ -17,7 +17,7 @@ SC_MODULE(Registers) {
 
     SC_CTOR(Registers) {
         for (int i = 0; i < 32; i++) {
-            registers[i] = i;
+            registers[i] = 0;
         }
 
         SC_METHOD(read);

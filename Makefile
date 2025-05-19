@@ -30,6 +30,10 @@ processor:
 	g++ testbench/tb_processor.cpp -o build/tb_processor -I/usr/local/include -L/usr/local/lib -lsystemc -lm
 	build/tb_processor
 
+algorithms:
+	g++ testbench/tb_algorithms.cpp -o build/tb_algorithms -I/usr/local/include -L/usr/local/lib -lsystemc -lm
+	build/tb_algorithms
+
 main:
 	g++ src/main.cpp -o build/main -I/usr/local/include -L/usr/local/lib -lsystemc -lm
 	build/main
