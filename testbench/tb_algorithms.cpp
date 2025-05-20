@@ -105,6 +105,7 @@ SC_MODULE(AlgorithmsTB) {
             imem->memory[i] = 0;
         }
 
+        // Valor absoluto
         // 2: CMP R1, R3
         imem->memory[2] = (Opcode::CMP << 26) | (1 << 21) | (3 << 16) | (0 << 11);
         // 3: NOP (ADD R0, R0, R0)
@@ -121,6 +122,7 @@ SC_MODULE(AlgorithmsTB) {
         imem->memory[8] = (Opcode::ADD << 26) | (0 << 21) | (1 << 16) | (2 << 11);
 
 
+        // Valor máximo
         // 9: CMP R5, R6
         imem->memory[9] = (Opcode::CMP << 26) | (5 << 21) | (6 << 16) | (0 << 11);
         // 10: NOP
@@ -135,6 +137,7 @@ SC_MODULE(AlgorithmsTB) {
         imem->memory[14] = (Opcode::ADD << 26) | (6 << 21) | (0 << 16) | (7 << 11);
 
 
+        // Multiplicação
         // 15: CLR R10 (resultado = 0)
         imem->memory[15] = (Opcode::ADD << 26) | (0 << 21) | (0 << 16) | (10 << 11); // R10 = 0
         // 16: CMP R9, R0 (verifica se multiplicador == 0)

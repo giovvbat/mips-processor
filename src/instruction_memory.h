@@ -13,8 +13,6 @@ SC_MODULE(InstructionMemory) {
     sc_uint<32> memory[256];
 
     SC_CTOR(InstructionMemory) {
-        memory[0] = (Opcode::ADD << 26) | (3 << 21) | (1 << 16) | (2 << 11);
-
         SC_METHOD(read);
         sensitive << inst_mem_read.pos();
         dont_initialize();

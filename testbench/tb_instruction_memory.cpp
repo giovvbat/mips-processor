@@ -33,6 +33,7 @@ SC_MODULE(InstructionMemoryTB) {
         imem->address(address);
         imem->inst_mem_read(inst_mem_read);
         imem->fetched_instruction(fetched_instruction);
+        imem->memory[0] = (Opcode::ADD << 26) | (3 << 21) | (1 << 16) | (2 << 11);
 
         SC_THREAD(test_process);
     }

@@ -1,5 +1,5 @@
 $date
-     May 18, 2025       22:52:14
+     May 19, 2025       21:55:25
 $end
 
 $version
@@ -49,8 +49,8 @@ b1 aaaad
 b10 aaaae
 b11 aaaaf
 b100000 aaaag
-b1 aaaah
-b10 aaaai
+b0 aaaah
+b0 aaaai
 b0 aaaaj
 0aaaak
 b0 aaaal
@@ -78,8 +78,6 @@ b101 aaaad
 b110 aaaae
 b111 aaaaf
 b0 aaaag
-b101 aaaah
-b110 aaaai
 
 #15000
 0aaaaa
@@ -92,8 +90,6 @@ b1010 aaaad
 b1011 aaaae
 b0 aaaaf
 b1000010 aaaag
-b1010 aaaah
-b1011 aaaai
 
 #25000
 0aaaaa
@@ -105,8 +101,6 @@ b1000 aaaac
 b1100 aaaad
 b1101 aaaae
 b1010101 aaaag
-b1100 aaaah
-b1101 aaaai
 
 #35000
 0aaaaa
@@ -118,8 +112,6 @@ b1001 aaaac
 b0 aaaad
 b0 aaaae
 b1110111 aaaag
-b0 aaaah
-b0 aaaai
 
 #45000
 0aaaaa
@@ -140,8 +132,6 @@ b10000 aaaad
 b10001 aaaae
 b10010 aaaaf
 b0 aaaag
-b10000 aaaah
-b10001 aaaai
 
 #65000
 0aaaaa
@@ -154,8 +144,6 @@ b11111 aaaad
 b11111 aaaae
 b11111 aaaaf
 b11111111 aaaag
-b11111 aaaah
-b11111 aaaai
 
 #75000
 0aaaaa
